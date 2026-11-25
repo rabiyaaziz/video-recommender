@@ -1,0 +1,10 @@
+[
+  {"id": "v1", "title": "Intro to Python", "category": "coding", "related": ["v2", "v4", "v5"]},
+  {"id": "v2", "title": "Python Lists", "category": "coding", "related": ["v1"]},
+  {"id": "v3", "title": "Lo-fi Beats", "category": "music", "related": []},
+  {"id": "v4", "title": "Python Dicts", "category": "coding", "related": ["v1", "v5"]},
+  {"id": "v5", "title": "Hash Maps Explained", "category": "coding", "related": ["v1", "v4", "v6"]},
+  {"id": "v6", "title": "Big-O Basics", "category": "coding", "related": ["v5", "v7"]},
+  {"id": "v7", "title": "Binary Search", "category": "coding", "related": ["v6"]},
+  {"id": "v8", "title": "Study With Me", "category": "music", "related": ["v3"]}
+]
