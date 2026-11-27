@@ -6,7 +6,7 @@ def recommend(watched, graph, k=None):
     excluding ones already watched, most-recommended first."""
 
     counts=count_related(watched,graph)
-    return rank_sort(counts,k)
+    return rank_bucket(counts, k)
    
 
 def count_related(watched, graph):
@@ -57,7 +57,7 @@ def rank_heap(counts, k):
 
     # keeps a heap of size k: O(m log k); tie_rule = higher count first, then smaller ID 
     top = heapq.nsmallest(k, counts.items(), key=tie_rule) 
-    
+
     results=[]
     for video,count in top:
         results.append(video)

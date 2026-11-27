@@ -49,3 +49,18 @@
 - **Per strategy:** sort uses `(-count, id)`; bucket sorts each bucket only when it's read (worst case O(m log m) if every video ties); heap uses `heapq.nsmallest` with the same key, because strings can't be negated for a hand-written min-heap. I wrote the heap manually first (see git history), then switched once the tie rule needed a custom key.
 - **Options:** No rule (arbitrary order), smaller ID first, by title.
 - **Trade-off:** Slightly more complex ranking code in each strategy.
+
+## 9. Default ranking strategy: bucket sort
+- **Decision:** `recommend()` uses `rank_bucket`.
+- **Why it matters:** Counting is O(E). Sorting is O(m log m), and when most links point to different videos (m ≈ E), ranking is the bottleneck.
+- **Benchmark** (`benchmark.py`: 10,000 videos, 50 related each, 200 watched → m = 6,136; averaged over 50 runs):
+
+  | Strategy | k = 10 | k = None |
+  |---|---|---|
+  | sort | 2.90 ms | 2.67 ms |
+  | heap | 0.53 ms | 2.95 ms |
+  | bucket | 0.37 ms | 1.30 ms |
+
+- **Why bucket:** Counts are small integers (max = number of watched videos), so there are few buckets. At small k it only sorts the top few buckets. It was fastest in both cases.
+- **Heap:** about 5× faster than sort at small k (O(m log k)), but slowest at k = None, where `nsmallest` falls back to a full sort plus a key call per item.
+- **Trade-off:** Bucket's worst case (every video ties) is still O(m log m) because of the tie rule, no worse than sort. Big-O alone would not have predicted these constants, which is why I measured.
