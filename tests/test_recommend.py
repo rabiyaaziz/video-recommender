@@ -35,3 +35,10 @@ def test_heap_matches_sort():
 def test_bucket_matches_sort():
     counts = count_related(["v1", "v4"], graph)
     assert rank_bucket(counts, 1) == rank_sort(counts, 1)
+
+def test_all_strategies_break_ties_the_same():
+    counts = {"v6": 1, "v2": 1, "v5": 2}
+    expected = ["v5", "v2", "v6"]
+    assert rank_sort(counts, None) == expected
+    assert rank_heap(counts, None) == expected
+    assert rank_bucket(counts, None) == expected

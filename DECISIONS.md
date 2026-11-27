@@ -42,3 +42,10 @@
 - **Why:** Lets me swap ranking strategies without touching counting, and lets the benchmark time only the ranking step so the comparison is fair.
 - **`k` parameter:** `k=None` returns all results (Python slices treat `None` as "to the end"), so existing callers didn't break. The API will pass a real k.
 - **Trade-off:** Two extra function calls; negligible.
+
+## 8. Tie-breaking
+- **Decision:** When counts are equal, the smaller video ID (string order) comes first.
+- **Why:** Results must be deterministic (same input → same output). Otherwise a bug a user reports can't be reproduced, so it can't be debugged, and switching ranking strategies would silently change what users see.
+- **Per strategy:** sort uses `(-count, id)`; bucket sorts each bucket only when it's read (worst case O(m log m) if every video ties); heap uses `heapq.nsmallest` with the same key, because strings can't be negated for a hand-written min-heap. I wrote the heap manually first (see git history), then switched once the tie rule needed a custom key.
+- **Options:** No rule (arbitrary order), smaller ID first, by title.
+- **Trade-off:** Slightly more complex ranking code in each strategy.

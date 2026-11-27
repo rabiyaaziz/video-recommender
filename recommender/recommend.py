@@ -7,8 +7,7 @@ def recommend(watched, graph, k=None):
 
     counts=count_related(watched,graph)
     return rank_sort(counts,k)
-
-    
+   
 
 def count_related(watched, graph):
     seen=set()
@@ -32,8 +31,8 @@ def count_related(watched, graph):
 def rank_sort(counts,k):
     priority_list=[]
     for video,count in counts.items():
-        priority_list.append((count,video))
-    priority_list.sort(reverse=True) 
+        priority_list.append((-count,video))
+    priority_list.sort() 
 
     results=[]
     for count,name in priority_list:
@@ -42,28 +41,26 @@ def rank_sort(counts,k):
     return results[:k]
 
 
+def tie_rule(item):
+    video, count = item
+    return (-count, video)
+
+
 def rank_heap(counts, k):
-    heap=[]
+    if not counts:
+        return []
 
     if k==0:
         return []
     if k is None:
-        k=len(counts)        
+        k=len(counts)  
 
-    for video,count in counts.items():
-        if len(heap)<k:
-            heapq.heappush(heap,(count,video))
-        else:
-            if heap[0][0]<count:
-                heapq.heappop(heap)
-                heapq.heappush(heap,(count,video))
-
-    results=[0]*len(heap)
-    index=len(heap)-1
-    while heap:
-        count,video=heapq.heappop(heap)
-        results[index]=video
-        index-=1
+    # keeps a heap of size k: O(m log k); tie_rule = higher count first, then smaller ID 
+    top = heapq.nsmallest(k, counts.items(), key=tie_rule) 
+    
+    results=[]
+    for video,count in top:
+        results.append(video)
 
     return results
 
@@ -89,6 +86,7 @@ def rank_bucket(counts, k):
     
     for index in range(len(buckets)-1,-1,-1):
         if buckets[index]!=0:
+            buckets[index].sort()
             for video in buckets[index]:
                 results.append(video)
                 if len(results)==k:
