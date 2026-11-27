@@ -1,5 +1,7 @@
 from recommender.loader import load_graph
 from recommender.recommend import recommend
+from recommender.recommend import rank_sort, rank_heap, count_related
+
 
 graph = load_graph("data/videos.json")
 
@@ -24,3 +26,7 @@ def test_unknown_id():
 def test_top_k():
     result = recommend(["v1", "v4"], graph, k=1)
     assert result == ["v5"]
+
+def test_heap_matches_sort():
+    counts = count_related(["v1", "v4"], graph)
+    assert rank_heap(counts, 1) == rank_sort(counts, 1)

@@ -1,3 +1,6 @@
+import heapq
+
+
 def recommend(watched, graph, k=None):
     """Return related videos for a watch history,
     excluding ones already watched, most-recommended first."""
@@ -25,6 +28,7 @@ def count_related(watched, graph):
                         priority_map[reco]+=1
     return priority_map
 
+
 def rank_sort(counts,k):
     priority_list=[]
     for video,count in counts.items():
@@ -36,6 +40,32 @@ def rank_sort(counts,k):
         results.append(name)
 
     return results[:k]
+
+
+def rank_heap(counts, k):
+    heap=[]
+
+    if k==0:
+        return []
+    if k is None:
+        k=len(counts)        
+
+    for video,count in counts.items():
+        if len(heap)<k:
+            heapq.heappush(heap,(count,video))
+        else:
+            if heap[0][0]<count:
+                heapq.heappop(heap)
+                heapq.heappush(heap,(count,video))
+
+    results=[0]*len(heap)
+    index=len(heap)-1
+    while heap:
+        count,video=heapq.heappop(heap)
+        results[index]=video
+        index-=1
+
+    return results
 
 
         
