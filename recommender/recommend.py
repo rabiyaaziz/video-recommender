@@ -68,4 +68,34 @@ def rank_heap(counts, k):
     return results
 
 
+def rank_bucket(counts, k):
+    if not counts or k==0:
+        return []
+
+    if k is None or k>len(counts):
+        k=len(counts)
+
+    max_count=max(counts.values())
+
+    buckets=[0]*(max_count+1)
+
+    for video,count in counts.items():
+        if buckets[count]==0:
+            buckets[count]=[video]
+        else:
+            buckets[count].append(video)
+
+    results=[]
+    
+    for index in range(len(buckets)-1,-1,-1):
+        if buckets[index]!=0:
+            for video in buckets[index]:
+                results.append(video)
+                if len(results)==k:
+                    return results
+
+    return results
+
+
+
         
