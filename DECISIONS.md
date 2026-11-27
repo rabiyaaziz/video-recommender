@@ -23,3 +23,16 @@
   functions named `test_*`), and shows exactly which assert failed and why.
   Plain `assert` keeps tests short and readable, vs. unittest's class boilerplate.
 - **Trade-off:** one extra dependency to install, but it's the industry standard.
+
+## 5. Ranking: count with a dict, then sort
+- **Decision:** Count how many watched videos point to each related video, then sort by count (highest first).
+- **Options:** A set for deduping plus separate counting, or a dict alone.
+- **Why:** Dict keys are unique, so one dict both dedupes and counts. My interview version used `seen.add()` to dedupe; once I added counting, that became redundant, so I removed it. `seen` now holds only watched videos.
+- **Sorting:** `.sort()` sorts in place; `sorted()` would create a copy I don't need.
+- **Trade-off:** Sorting every candidate is O(m log m), even if I only need the top k. A heap could do O(m log k). I'll compare on Day 3.
+
+## 6. Unknown video IDs
+- **Decision:** Skip watched IDs that aren't in the graph (`if watch in graph`).
+- **Options:** Crash with a KeyError, skip silently, or reject with an error.
+- **Why:** On Day 4, `watched` comes from a URL anyone can type. One bad ID shouldn't crash recommendations for everyone.
+- **Trade-off:** Skipping hides bad input. The API could return a 400 error instead (revisit on Day 4).
