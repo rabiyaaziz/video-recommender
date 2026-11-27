@@ -36,3 +36,9 @@
 - **Options:** Crash with a KeyError, skip silently, or reject with an error.
 - **Why:** On Day 4, `watched` comes from a URL anyone can type. One bad ID shouldn't crash recommendations for everyone.
 - **Trade-off:** Skipping hides bad input. The API could return a 400 error instead (revisit on Day 4).
+
+## 7. Separate counting from ranking
+- **Decision:** Split `recommend()` into `count_related()` (builds counts) and `rank_*()` (orders them). `recommend()` just calls both.
+- **Why:** Lets me swap ranking strategies without touching counting, and lets the benchmark time only the ranking step so the comparison is fair.
+- **`k` parameter:** `k=None` returns all results (Python slices treat `None` as "to the end"), so existing callers didn't break. The API will pass a real k.
+- **Trade-off:** Two extra function calls; negligible.

@@ -20,3 +20,7 @@ def test_no_related_videos():
 def test_unknown_id():
     result = recommend(["v10"], graph)
     assert result == []
+
+def test_top_k():
+    result = recommend(["v1", "v4"], graph, k=1)
+    assert result == ["v5"]
